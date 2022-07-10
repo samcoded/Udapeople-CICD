@@ -1,17 +1,38 @@
-- name: Copy backend files
-  become: true
-  copy:
-    src: /home/backend.tar.gz
-    dest: /home/ubuntu/backend.tar.gz
-
-- name: Start PM2
+---
+- name: 'update and upgrade packages.'
+  become: yes
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+- name: remove unneeded deps
+  become: yes
+  apt:
+    autoremove: yes
+- name: install dependencies
+  become: yes
+  apt:
+    name: ['nodejs', 'npm']
+    state: latest
+    update_cache: yes
+- name: install pm2
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    state: latest
+    production: yes
+- name: extract artifact
+  become: yes
+  unarchive:
+    src: files/artifact.tar.gz
+    dest: .
+# - name: link node to nodejs (if you installed nodejs)
+#   become: yes
+#   shell: |
+#     ln -s /usr/bin/nodejs /usr/bin/node
+- name: start app
+  become: yes
   shell: |
-    cd /home/ubuntu/
-    tar xzvf backend.tar.gz
-    mv home/circleci/project/backend .
-    cd backend
-    sudo npm install -g npm@latest
-    sudo npm install -g webpack-dev-server
-    sudo npm install
-    sudo npm run build
-    sudo pm2 start npm --name backend -- start
+    pm2 stop all
+    pm2 start npm -- start
