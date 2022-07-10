@@ -324,11 +324,7 @@ jobs:
             - run:
                   name: Install dependencies
                   command: |
-                      apk add curl
-                      apk add --upgrade bash
-                      apk add --update ansible openssh-client tar gzip
-                      pip3 install awscli
-                      apk add --update nodejs nodejs-npm
+                      apk add --update --no-cache tar gzip nodejs npm tree aws-cli ansible
             - run:
                   name: Deploy backend
                   command: |
@@ -337,9 +333,11 @@ jobs:
                       npm run build
                       cd ..
                       # Zip the directory
-                      tar czf backend.tar.gz -P backend/dist
+                      tar -C backend -czvf artifact.tar.gz .
+                      # tree -afC /root/project/.circleci -I *node_modules*
+                      mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
+                      mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
                       cd .circleci/ansible
-                      echo "Contents  of the inventory.txt file is -------"
                       cat inventory.txt
                       ansible-playbook -i inventory.txt deploy-backend.yml
             # Here's where you will add some code to rollback on failure
