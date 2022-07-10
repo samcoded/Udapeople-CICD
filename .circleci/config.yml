@@ -282,6 +282,7 @@ jobs:
             - run:
                   name: Deploy frontend objects
                   command: |
+                      cd frontend
                       npm i
                       npm run build
                       ls -l
@@ -324,9 +325,9 @@ jobs:
             - run:
                   name: Deploy backend
                   command: |
-                      cd backend
-                      npm i
-                      npm run build
+                      #   cd backend
+                      #   npm i
+                      #   npm run build
                       cd ..
                       # Zip the directory
                       tar -C backend -czvf artifact.tar.gz .
@@ -382,7 +383,7 @@ jobs:
                       UFRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
                       if curl -s $FRONTEND_WEBSITE | grep "Welcome"
                       then
-                      exit 0
+                      exit 1
                       else
                       exit 1
                       fi
