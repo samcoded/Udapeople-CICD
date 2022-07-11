@@ -1,58 +1,40 @@
 ---
-- name: "update apt packages."
-  become: true
-  apt:
-    update_cache: yes
+  - name: install rsync on the ansible controller
+    become: yes
+    connection: local
+    package:
+      name: 
+        - openssh
+        - rsync
+      state: present
+      
+  - name: "move files to server"
+    become: yes
+    synchronize:
+      src: /root/project/backend/dist
+      dest: ./udapeople
+      recursive: true
 
-- name: "upgrade packages"
-  become: true
-  apt:
-    upgrade: yes
+  - name: "move node modules"
+    become: yes
+    synchronize:
+      src: /root/project/backend/node_modules
+      dest: ./udapeople
+      recursive: true
 
-- name: remove dependencies that are no longer required
-  become: true
-  apt:
-    autoremove: yes
-
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
-
-- name: "install pm2"
-  become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
-
-- name: "Creates directory"
-  file:
-    path: ~/web
-    state: directory
-
-- name: Extract files
-  become: true
-  unarchive:
-    src: files/artifact.tar.gz
-    dest: .
-
-- name: Executing node
-  become: true
-  shell: |
-    pm2 stop all
-    pm2 start npm -- start
-  environment:
-    ENVIRONMENT: production
-    TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
-    TYPEORM_MIGRATIONS_DIR: migrations
-    TYPEORM_MIGRATIONS: migrations/COD/*.js
-    TYPEORM_ENTITIES: modules/domain/**/*.entity.js
-    TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
-    TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
-    TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
-    TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
-    TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
+  - name: "run server"
+    become: true
+    command: pm2 start -f ./main.js
+    args:
+      chdir: ./udapeople/dist
+    environment:
+      ENVIRONMENT: production
+      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+      TYPEORM_MIGRATIONS_DIR: "./migrations"
+      TYPEORM_MIGRATIONS: "./migrations/*.js"
+      TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+      TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+      TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+      TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+      TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
