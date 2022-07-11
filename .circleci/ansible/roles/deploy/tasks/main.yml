@@ -49,7 +49,7 @@
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
     TYPEORM_MIGRATIONS_DIR: migrations
-    TYPEORM_MIGRATIONS: migrations/*.js
+    TYPEORM_MIGRATIONS: migrations/COD/*.js
     TYPEORM_ENTITIES: modules/domain/**/*.entity.js
     TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
     TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
