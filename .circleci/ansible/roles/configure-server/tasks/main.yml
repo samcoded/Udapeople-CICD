@@ -1,28 +1,43 @@
 ---
-- name: "update apt"
-  become: true
-  apt:
-      update_cache: yes
+# - name: "update apt"
+#   become: true
+#   apt:
+#       update_cache: yes
 
-- name: "upgrade apt packages"
-  become: true
-  apt:
-      upgrade: "yes"
+# - name: "upgrade apt packages"
+#   become: true
+#   apt:
+#       upgrade: "yes"
 
-- name: "Add Node.js from Nodesource"
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-    
-- name: "Install Node.js 12"
+- name: "install dependencies."
   become: true
   apt:
-    name: ["nodejs"]
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
-- name: "Install PM2 Globally"
+- name: "install n"
+  become: true
+  npm:
+    name: n
+    global: yes
+    production: yes
+
+- name: "install nodejs 12.22.12"
+  become: true
+  shell: n 12.21.12
+
+- name: "install pm2"
+  become: true
   npm:
     name: pm2
     global: yes
-    
+    production: yes
+    state: present
+
+- name: "Node version"
+  become: true
+  shell: |
+    echo $(node --version)
+  register: nodev
+  debug: msg="the echo was {{ nodev.stdout }}"
