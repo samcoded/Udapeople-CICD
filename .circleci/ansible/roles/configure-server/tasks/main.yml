@@ -37,7 +37,5 @@
 
 - name: "Node version"
   become: true
-  shell: |
-    echo $(node --version)
+  ansible.builtin.shell: echo $(node --version)
   register: nodev
-  debug: msg="the echo was {{ nodev.stdout }}"
