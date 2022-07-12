@@ -235,7 +235,7 @@ jobs:
     run-migrations:
         docker:
             # Docker image here that supports NodeJS
-            - image: sleavely/node-awscli:14.x
+            - image: sleavely/node-awscli:12.x
               environment:
                   NODE_ENV: "local"
                   VERSION: "1"
@@ -426,11 +426,11 @@ jobs:
                       else
                       return 1
                       fi
-        #    # Here's where you will add some code to rollback on failure
-        #     - destroy-environment:
-        #           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-        #     - revert-migrations:
-        #           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+           # Here's where you will add some code to rollback on failure
+            - destroy-environment:
+                  workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+            - revert-migrations:
+                  workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
     default:
