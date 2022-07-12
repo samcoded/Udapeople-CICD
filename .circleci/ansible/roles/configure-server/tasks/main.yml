@@ -1,6 +1,6 @@
 ---
 - name: "update apt"
-  become: yes
+  become: true
   apt:
       update_cache: yes
 
@@ -9,28 +9,20 @@
   apt:
       upgrade: "yes"
 
-- name: "install dependencies."
+- name: "Add Node.js from Nodesource"
+  become: true
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    
+- name: "Install Node.js 12"
   become: true
   apt:
-      name: ["nodejs", "npm"]
-      state: latest
-      update_cache: yes
+    name: ["nodejs"]
+    state: latest
+    update_cache: yes
 
-- name: "install n"
-  become: yes
+- name: "Install PM2 Globally"
   npm:
-      name: n
-      global: yes
-      production: yes
-
-- name: "install nodejs 12.20.1"
-  become: yes
-  shell: n 12.20.1
-
-- name: "install pm2"
-  become: true
-  npm:
-      name: pm2
-      global: yes
-      production: yes
-      state: present
+    name: pm2
+    global: yes
+    
