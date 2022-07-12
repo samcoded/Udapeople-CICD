@@ -25,7 +25,7 @@
 
 - name: "install nodejs 12"
   become: true
-  shell: n 12
+  shell: sudo n 12
 
 - name: "install pm2"
   become: true
@@ -37,5 +37,10 @@
 
 - name: "Node version"
   become: true
-  ansible.builtin.shell: echo $(node --version)
-  register: nodev
+  shell: |
+    node --version
+  register: execute_nodev
+
+- name: print message
+  debug:
+    msg: "{{ execute_nodev.stdout_lines }}"
