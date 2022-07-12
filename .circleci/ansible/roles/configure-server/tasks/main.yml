@@ -25,7 +25,7 @@
 
 - name: "install nodejs 12"
   become: true
-  shell: sudo n 12
+  shell: n 12
 
 - name: "install pm2"
   become: true
@@ -36,7 +36,6 @@
     state: present
 
 - name: "Node version"
-  become: true
   shell: |
     node --version
   register: execute_nodev
