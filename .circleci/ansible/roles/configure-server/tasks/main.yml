@@ -1,13 +1,13 @@
 ---
-# - name: "update apt"
-#   become: true
-#   apt:
-#       update_cache: yes
+- name: "update apt"
+  become: true
+  apt:
+      update_cache: yes
 
-# - name: "upgrade apt packages"
-#   become: true
-#   apt:
-#       upgrade: "yes"
+- name: "upgrade apt packages"
+  become: true
+  apt:
+      upgrade: "yes"
 
 - name: "install dependencies."
   become: true
